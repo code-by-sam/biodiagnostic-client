@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../config/axiosClient";
+
 import logo from "../assets/logo.png"; // Suponiendo que tienes un logo en assets
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

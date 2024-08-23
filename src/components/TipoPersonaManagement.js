@@ -1,6 +1,7 @@
 // src/components/TipoPersonaManagement.js
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../config/axiosClient";
+
 
 const TipoPersonaManagement = () => {
   const [tiposPersona, setTiposPersona] = useState([]);

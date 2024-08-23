@@ -1,6 +1,7 @@
 // src/components/RoleManagement.js
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../config/axiosClient";
+
 
 const RoleManagement = () => {
   const [roles, setRoles] = useState([]);

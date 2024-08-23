@@ -1,7 +1,8 @@
 // src/components/AssignUser.js
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../config/axiosClient";
+
 
 const AssignUser = () => {
   const [personas, setPersonas] = useState([]);

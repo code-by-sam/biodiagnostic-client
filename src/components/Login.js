@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Asegúrate de instalar axios para las solicitudes HTTP
+import axios from "../config/axiosClient";
+ // Asegúrate de instalar axios para las solicitudes HTTP
 import logo from "../assets/logo.png"; // Ruta de tu logo
 
 function Login() {
