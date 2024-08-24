@@ -37,7 +37,7 @@ function ResultadoCliente() {
     if (storedUserRole) setUserRole(storedUserRole);
 
     if (storedUserRole === "Cliente" && storedUserId) {
-      fetch(`/api/citas/usuario/${storedUserId}`)
+      fetch(`https://biodiagnostic.onrender.com/api/citas/usuario/${storedUserId}`)
         .then((response) => {
           if (!response.ok)
             throw new Error(`HTTP error! status: ${response.status}`);
