@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/biodiagnostic-client/static/css/main.20656d62.css",
-    "main.js": "/biodiagnostic-client/static/js/main.2a9306d2.js",
+    "main.js": "/biodiagnostic-client/static/js/main.3a650289.js",
     "static/js/453.419a5d54.chunk.js": "/biodiagnostic-client/static/js/453.419a5d54.chunk.js",
     "static/media/lab2.jpg": "/biodiagnostic-client/static/media/lab2.cc64f43009c607ea91bc.jpg",
     "static/media/lab1.jpg": "/biodiagnostic-client/static/media/lab1.e7eb7f67838ffa976f3c.jpg",
@@ -11,11 +11,11 @@
     "static/media/logo.png": "/biodiagnostic-client/static/media/logo.292cdfa9de0a55911880.png",
     "index.html": "/biodiagnostic-client/index.html",
     "main.20656d62.css.map": "/biodiagnostic-client/static/css/main.20656d62.css.map",
-    "main.2a9306d2.js.map": "/biodiagnostic-client/static/js/main.2a9306d2.js.map",
+    "main.3a650289.js.map": "/biodiagnostic-client/static/js/main.3a650289.js.map",
     "453.419a5d54.chunk.js.map": "/biodiagnostic-client/static/js/453.419a5d54.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.20656d62.css",
-    "static/js/main.2a9306d2.js"
+    "static/js/main.3a650289.js"
   ]
 }
