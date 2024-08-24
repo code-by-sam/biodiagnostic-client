@@ -441,11 +441,12 @@ const PerfilManagement = () => {
                   <td className="border border-gray-300 px-4 py-2">
                     {perfil.imagen && (
                       <img
-                        src={`/uploads/perfiles/${perfil.imagen}`}
+                        src={`https://biodiagnostic.onrender.com/uploads/perfiles/${perfil.imagen}`}
                         alt={perfil.nombre}
                         className="h-16 object-cover"
                       />
                     )}
+                    
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
                     {perfil.examenes.map((examen) => (
