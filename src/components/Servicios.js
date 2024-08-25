@@ -17,7 +17,10 @@ const ExamCard = ({ exam }) => (
     <h2 className="text-xl font-semibold mb-2">{exam.nombre}</h2>
     <p className="mb-2">{exam.descripcion}</p>
     <p className="text-gray-600">Área: {exam.area.nombre}</p>
-    <p className="font-bold"> S/.&nbsp;{parseFloat(exam.costo).toFixed(2)}</p>{" "}
+    <p className="font-bold">
+      {" "}
+      S/.&nbsp;{parseFloat(exam.costo).toFixed(2)}
+    </p>{" "}
     {/* Formato en soles */}
   </div>
 );
@@ -39,7 +42,10 @@ const ProfileCard = ({ profile }) => {
       <p className="text-gray-600 mb-2">
         Exámenes: {profile.examenes.map((examen) => examen.nombre).join(", ")}
       </p>
-      <p className="font-bold"> S/.&nbsp;{parseFloat(profile.costo).toFixed(2)}</p>{" "}
+      <p className="font-bold">
+        {" "}
+        S/.&nbsp;{parseFloat(profile.costo).toFixed(2)}
+      </p>{" "}
       {/* Formato en soles */}
     </div>
   );
@@ -91,8 +97,9 @@ function Servicios() {
     const filtered = exams.filter(
       (exam) =>
         exam.nombre.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (selectedArea ? exam.area._id === selectedArea : true)
+        (selectedArea ? exam.area && exam.area._id === selectedArea : true)
     );
+
     setFilteredExams(filtered);
   }, [searchTerm, selectedArea, exams]);
 

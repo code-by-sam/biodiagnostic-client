@@ -9,6 +9,8 @@ const ExamenManagement = () => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [costo, setCosto] = useState("");
+  const [areas, setAreas] = useState([]);
+  const [selectedArea, setSelectedArea] = useState(""); // New state for the selected area
   const [selectedExamenId, setSelectedExamenId] = useState(null);
   const [estado, setEstado] = useState("habilitado");
   const [showConfirm, setShowConfirm] = useState(false);
@@ -35,21 +37,53 @@ const ExamenManagement = () => {
   }, []);
 
   useEffect(() => {
-    if (searchTerm) {
-      setFilteredExamenes(
-        examenes.filter((examen) =>
-          examen.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
-    } else {
-      setFilteredExamenes(examenes);
-    }
-  }, [searchTerm, examenes]);
+    const fetchAreas = async () => {
+      try {
+        const response = await axios.get("/api/areas");
+        const areasData = response.data;
+        if (Array.isArray(areasData)) {
+          setAreas(areasData);
+        } else {
+          console.error(
+            "Los datos de áreas no son una lista válida",
+            areasData
+          );
+        }
+      } catch (error) {
+        console.error("Error al obtener las áreas", error);
+      }
+    };
+
+    fetchAreas();
+  }, []);
+
+  useEffect(() => {
+    const fetchExamenes = async () => {
+      try {
+        const response = await axios.get("/api/examenes");
+        const examenesData = response.data;
+        if (Array.isArray(examenesData)) {
+          setExamenes(examenesData);
+          setFilteredExamenes(examenesData);
+        } else {
+          console.error(
+            "Los datos de exámenes no son una lista válida",
+            examenesData
+          );
+        }
+      } catch (error) {
+        console.error("Error al obtener los exámenes", error);
+      }
+    };
+
+    fetchExamenes();
+  }, []);
 
   const handleSelectExamen = (examen) => {
     setNombre(examen.nombre);
     setDescripcion(examen.descripcion);
     setCosto(examen.costo);
+    setSelectedArea(examen.area._id); // Set the selected area
     setEstado(examen.estado);
     setSelectedExamenId(examen._id);
   };
@@ -72,8 +106,15 @@ const ExamenManagement = () => {
         descripcion,
         costo,
         estado,
+        area: selectedArea,
       });
-      setExamenes([...examenes, response.data]);
+      const newExamen = response.data;
+      // Asegúrate de que el examen tiene el objeto de área completo
+      const areaResponse = await axios.get(`/api/areas/${newExamen.area}`);
+      newExamen.area = areaResponse.data;
+
+      setExamenes([...examenes, newExamen]);
+      setFilteredExamenes([...examenes, newExamen]);
       setSuccessMessage("Examen creado exitosamente");
       resetForm();
     } catch (error) {
@@ -90,10 +131,21 @@ const ExamenManagement = () => {
         descripcion,
         costo,
         estado,
+        area: selectedArea,
       });
+      const updatedExamen = response.data;
+      // Asegúrate de que el examen tiene el objeto de área completo
+      const areaResponse = await axios.get(`/api/areas/${updatedExamen.area}`);
+      updatedExamen.area = areaResponse.data;
+
       setExamenes(
         examenes.map((examen) =>
-          examen._id === selectedExamenId ? response.data : examen
+          examen._id === selectedExamenId ? updatedExamen : examen
+        )
+      );
+      setFilteredExamenes(
+        examenes.map((examen) =>
+          examen._id === selectedExamenId ? updatedExamen : examen
         )
       );
       setSuccessMessage("Examen actualizado exitosamente");
@@ -120,11 +172,14 @@ const ExamenManagement = () => {
       console.error("Error al cambiar el estado del examen:", error);
     }
   };
-
   const handleDelete = async () => {
     try {
       await axios.delete(`/api/examenes/${selectedExamenId}`);
+      // Actualizar el estado de los exámenes
       setExamenes(examenes.filter((examen) => examen._id !== selectedExamenId));
+      setFilteredExamenes(
+        filteredExamenes.filter((examen) => examen._id !== selectedExamenId)
+      ); // Actualizar filteredExamenes también
       setSuccessMessage("Examen eliminado exitosamente");
       resetForm();
     } catch (error) {
@@ -164,7 +219,9 @@ const ExamenManagement = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const totalPages = Math.ceil(filteredExamenes.length / examenesPerPage);
-
+  if (!examenes) {
+    return <div>No se encontraron exámenes.</div>;
+  }
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Gestión de Exámenes</h1>
@@ -200,6 +257,25 @@ const ExamenManagement = () => {
             required
           />
         </div>
+        <div className="mb-2">
+          <label className="block text-gray-700">Área</label>
+          <select
+            value={selectedArea}
+            onChange={(e) => setSelectedArea(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded"
+            required
+          >
+            <option value="" disabled>
+              Selecciona un Área
+            </option>
+            {areas.map((area) => (
+              <option key={area._id} value={area._id}>
+                {area.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="mb-2">
           <label className="block text-gray-700">Estado</label>
           <select
@@ -270,66 +346,73 @@ const ExamenManagement = () => {
                   Descripción
                 </th>
                 <th className="border border-gray-300 px-4 py-2">Costo</th>
+                <th className="border border-gray-300 px-4 py-2">Área</th>{" "}
+                {/* Nueva columna para área */}
                 <th className="border border-gray-300 px-4 py-2">Estado</th>
                 <th className="border border-gray-300 px-4 py-2">Editar</th>
                 <th className="border border-gray-300 px-4 py-2">Eliminar</th>
               </tr>
             </thead>
             <tbody>
-              {currentExamenes.map((examen) => (
-                <tr key={examen._id}>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {examen.nombre}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {examen.descripcion}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    S/.{examen.costo}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    <button
-                      type="button"
-                      className={`px-2 py-1 rounded text-white ${
-                        examen.estado === "habilitado"
-                          ? "bg-green-500"
-                          : "bg-red-500"
-                      }`}
-                      onClick={() => handleEstadoToggle(examen)}
-                    >
-                      {examen.estado === "habilitado"
-                        ? "Habilitado"
-                        : "Inhabilitado"}
-                    </button>
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">
-                    <button
-                      onClick={() => handleSelectExamen(examen)}
-                      className="bg-amber-600 text-white p-3 rounded-full hover:bg-black flex items-center justify-center w-12 h-12"
-                    >
-                      <FontAwesomeIcon
-                        icon={faEdit}
-                        style={{ fontSize: "1.5rem" }}
-                      />
-                    </button>
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">
-                    <button
-                      onClick={() => {
-                        setSelectedExamenId(examen._id);
-                        setAction("delete");
-                        setShowConfirm(true);
-                      }}
-                      className="bg-red-500 text-white p-3 rounded-full hover:bg-black flex items-center justify-center w-12 h-12"
-                    >
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        style={{ fontSize: "1.5rem" }}
-                      />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {currentExamenes.map((examen) =>
+                examen && examen.nombre ? (
+                  <tr key={examen._id}>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {examen.nombre}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {examen.descripcion}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      S/.{examen.costo}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {examen.area?.nombre || "Área no disponible"}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      <button
+                        type="button"
+                        className={`px-2 py-1 rounded text-white ${
+                          examen.estado === "habilitado"
+                            ? "bg-green-500"
+                            : "bg-red-500"
+                        }`}
+                        onClick={() => handleEstadoToggle(examen)}
+                      >
+                        {examen.estado === "habilitado"
+                          ? "Habilitado"
+                          : "Inhabilitado"}
+                      </button>
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">
+                      <button
+                        onClick={() => handleSelectExamen(examen)}
+                        className="bg-amber-600 text-white p-3 rounded-full hover:bg-black flex items-center justify-center w-12 h-12"
+                      >
+                        <FontAwesomeIcon
+                          icon={faEdit}
+                          style={{ fontSize: "1.5rem" }}
+                        />
+                      </button>
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">
+                      <button
+                        onClick={() => {
+                          setSelectedExamenId(examen._id);
+                          setAction("delete");
+                          setShowConfirm(true);
+                        }}
+                        className="bg-red-500 text-white p-3 rounded-full hover:bg-black flex items-center justify-center w-12 h-12"
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          style={{ fontSize: "1.5rem" }}
+                        />
+                      </button>
+                    </td>
+                  </tr>
+                ) : null
+              )}
             </tbody>
           </table>
 
