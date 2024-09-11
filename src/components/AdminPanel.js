@@ -24,6 +24,7 @@ function AdminPanel() {
   const [activeTab, setActiveTab] = useState("clientes");
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showExamOptions, setShowExamOptions] = useState(false);
+  const [showScheduleOptions, setShowScheduleOptions] = useState(false);
   const [userName, setUserName] = useState(""); // Para almacenar el nombre del usuario
   const [userRole, setUserRole] = useState(""); // Para almacenar el rol del usuario
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ function AdminPanel() {
     // Elimina el token del localStorage o del estado
     localStorage.removeItem("token");
     localStorage.removeItem("userRole"); // Elimina el rol del localStorage
+    localStorage.removeItem("userName"); // Elimina el nombre del usuario del localStorage
     // Redirige al usuario a la página principal
     navigate("/");
   };
@@ -62,6 +64,12 @@ function AdminPanel() {
       setShowExamOptions(!showExamOptions);
     } else {
       setShowExamOptions(false);
+    }
+
+    if (tab === "agendar-cita") {
+      setShowScheduleOptions(!showScheduleOptions);
+    } else {
+      setShowScheduleOptions(false);
     }
 
     setActiveTab(tab);
@@ -94,47 +102,46 @@ function AdminPanel() {
                 Clientes
               </Link>
             </li>
-            <li>
-              <Link
-                to="/admin/citas/lista/"
+            <li className="relative">
+              <button
                 className={`block py-2 px-4 rounded ${
-                  activeTab === "lista-citas"
+                  activeTab === "agendar-cita"
                     ? "bg-gray-600"
                     : "hover:bg-gray-700"
-                }`}
-                onClick={() => handleTabClick("lista-citas")}
+                } flex items-center`}
+                onClick={() => handleTabClick("agendar-cita")}
               >
-                <FontAwesomeIcon icon={faList} className="mr-2" />
-                Lista de Citas Registradas
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/admin/citas/lista-pendiente"
-                className={`block py-2 px-4 rounded ${
-                  activeTab === "lista-pendiente"
-                    ? "bg-gray-600"
-                    : "hover:bg-gray-700"
-                }`}
-                onClick={() => handleTabClick("lista-pendiente")}
+                <FontAwesomeIcon icon={faCalendarPlus} className="mr-1" />
+                Agendar Citas
+              </button>
+              <div
+                className={`transition-max-height duration-300 ease-in-out ${
+                  showScheduleOptions ? "max-h-40" : "max-h-0"
+                } overflow-hidden`}
               >
-                <FontAwesomeIcon icon={faList} className="mr-2" />
-                Lista de Citas Agendadas
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/admin/citas/crear-pendiente"
-                className={`block py-2 px-4 rounded ${
-                  activeTab === "crear-pendiente"
-                    ? "bg-gray-600"
-                    : "hover:bg-gray-700"
-                }`}
-                onClick={() => handleTabClick("crear-pendiente")}
-              >
-                <FontAwesomeIcon icon={faCalendarPlus} className="mr-2" />
-                Agendar Cita
-              </Link>
+                <ul className="bg-gray-700 rounded shadow-lg">
+                  <li>
+                    <Link
+                      to="/admin/citas/crear-pendiente"
+                      className="block py-2 px-4 rounded hover:bg-gray-600 flex items-center"
+                      onClick={() => handleTabClick("crear-pendiente")}
+                    >
+                      <FontAwesomeIcon icon={faCalendarPlus} className="mr-2" />
+                      Agendar
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/citas/lista-pendiente"
+                      className="block py-2 px-4 rounded hover:bg-gray-600 flex items-center"
+                      onClick={() => handleTabClick("lista-pendiente")}
+                    >
+                      <FontAwesomeIcon icon={faList} className="mr-2" />
+                      Citas Agendadas
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </li>
             <li className="relative">
               <button
@@ -146,7 +153,7 @@ function AdminPanel() {
                 onClick={() => handleTabClick("realizar-cita")}
               >
                 <FontAwesomeIcon icon={faHeartbeat} className="mr-1" />
-                Realizar Exámenes
+                Registrar Citas
               </button>
               <div
                 className={`transition-max-height duration-300 ease-in-out ${
@@ -161,7 +168,7 @@ function AdminPanel() {
                       onClick={() => handleTabClick("nueva-cita")}
                     >
                       <FontAwesomeIcon icon={faCalendarPlus} className="mr-2" />
-                      Registrar Cita
+                      Registrar
                     </Link>
                   </li>
                   <li>
@@ -174,7 +181,62 @@ function AdminPanel() {
                         icon={faClipboardCheck}
                         className="mr-2"
                       />
-                      Registrar citas con citas agendadas
+                      Registrar con cita agendada
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/citas/lista/"
+                      className="block py-2 px-4 rounded hover:bg-gray-600 flex items-center"
+                      onClick={() => handleTabClick("lista-citas")}
+                    >
+                      <FontAwesomeIcon icon={faList} className="mr-2" />
+                      Citas Registradas
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li className="relative">
+              <button
+                className={`block py-2 px-4 rounded ${
+                  activeTab === "usuarios" ? "bg-gray-600" : "hover:bg-gray-700"
+                } flex items-center`}
+                onClick={() => handleTabClick("usuarios")}
+              >
+                <FontAwesomeIcon icon={faUser} className="mr-2" />
+                Usuarios
+              </button>
+              <div
+                className={`transition-max-height duration-300 ease-in-out ${
+                  showUserOptions ? "max-h-40" : "max-h-0"
+                } overflow-hidden`}
+              >
+                <ul className="bg-gray-700 rounded shadow-lg">
+                  <li>
+                    <Link
+                      to="/admin/usuarios/crear"
+                      className="block py-2 px-4 rounded hover:bg-gray-600 flex items-center"
+                      onClick={() => {
+                        handleTabClick("usuarios");
+                        setShowUserOptions(false);
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faPlus} className="mr-2" />
+                      Crear usuario
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/usuarios/asignar"
+                      className="block py-2 px-4 rounded hover:bg-gray-600 flex items-center"
+                      onClick={() => {
+                        handleTabClick("usuarios");
+                        setShowUserOptions(false);
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faUserTag} className="mr-2" />
+                      Asignar usuario
                     </Link>
                   </li>
                 </ul>
@@ -258,67 +320,6 @@ function AdminPanel() {
                   >
                     <FontAwesomeIcon icon={faUserTie} className="mr-2" />
                     Roles
-                  </Link>
-                </li>
-                <li className="relative">
-                  <button
-                    className={`block py-2 px-4 rounded ${
-                      activeTab === "usuarios"
-                        ? "bg-gray-600"
-                        : "hover:bg-gray-700"
-                    } flex items-center`}
-                    onClick={() => handleTabClick("usuarios")}
-                  >
-                    <FontAwesomeIcon icon={faUser} className="mr-2" />
-                    Usuarios
-                  </button>
-                  <div
-                    className={`transition-max-height duration-300 ease-in-out ${
-                      showUserOptions ? "max-h-40" : "max-h-0"
-                    } overflow-hidden`}
-                  >
-                    <ul className="bg-gray-700 rounded shadow-lg">
-                      <li>
-                        <Link
-                          to="/admin/usuarios/crear"
-                          className="block py-2 px-4 rounded hover:bg-gray-600 flex items-center"
-                          onClick={() => {
-                            handleTabClick("usuarios");
-                            setShowUserOptions(false);
-                          }}
-                        >
-                          <FontAwesomeIcon icon={faPlus} className="mr-2" />
-                          Crear usuario
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/admin/usuarios/asignar"
-                          className="block py-2 px-4 rounded hover:bg-gray-600 flex items-center"
-                          onClick={() => {
-                            handleTabClick("usuarios");
-                            setShowUserOptions(false);
-                          }}
-                        >
-                          <FontAwesomeIcon icon={faUserTag} className="mr-2" />
-                          Asignar usuario
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/empleados"
-                    className={`block py-2 px-4 rounded ${
-                      activeTab === "empleados"
-                        ? "bg-gray-600"
-                        : "hover:bg-gray-700"
-                    }`}
-                    onClick={() => handleTabClick("empleados")}
-                  >
-                    <FontAwesomeIcon icon={faUserTie} className="mr-2" />
-                    Empleados
                   </Link>
                 </li>
               </ul>

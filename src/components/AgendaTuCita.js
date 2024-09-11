@@ -199,8 +199,8 @@ function AgendaTuCita() {
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Navbar */}
       <nav className="bg-blue-800 p-4 shadow-md">
-        <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
+          <div className="flex items-center mb-4 md:mb-0">
             <img
               src={logo}
               alt="Logo del Laboratorio"
@@ -208,22 +208,22 @@ function AgendaTuCita() {
             />
             <span className="text-white text-2xl font-bold">BioDiagnostic</span>
           </div>
-          <div className="flex space-x-6">
+          <div className="flex flex-col md:flex-row md:space-x-6 w-full md:w-auto mb-4 md:mb-0">
             <Link
               to="/"
-              className="text-white hover:bg-red-600 transition-colors"
+              className="text-white hover:bg-red-600 transition-colors p-2 rounded-md text-center"
             >
               Inicio
             </Link>
             <Link
               to="/servicios"
-              className="text-white hover:bg-red-600 transition-colors"
+              className="text-white hover:bg-red-600 transition-colors p-2 rounded-md text-center"
             >
               Servicios
             </Link>
             <Link
               to="/agenda"
-              className="text-white hover:bg-red-600 transition-colors"
+              className="text-white hover:bg-red-600 transition-colors p-2 rounded-md text-center"
             >
               Agenda Tu Cita
             </Link>
@@ -243,7 +243,7 @@ function AgendaTuCita() {
       {/* Banner */}
       <div className="relative w-full h-32 flex flex-col items-center justify-center text-white bg-blue-800">
         <div className="relative z-10 text-center">
-          <h1 className="text-3xl font-bold">Agenda Tu Cita</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold">Agenda tu cita</h1>
           <p className="text-md mt-1">
             Puedes agendar tu cita de manera fácil y rápida
           </p>
@@ -363,7 +363,7 @@ function AgendaTuCita() {
                   <option value="Masculino">Masculino</option>
                   <option value="Femenino">Femenino</option>
                   <option value="No especificado">No especificado</option>
-                  </select>
+                </select>
               </div>
               <div>
                 <label className="block text-gray-700 font-bold mb-1">

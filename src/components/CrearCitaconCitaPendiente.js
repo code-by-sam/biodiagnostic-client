@@ -259,14 +259,14 @@ const CrearCitaconCitaPendiente = () => {
   return (
     <div className="p-4 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-bold">Gestión de Citas Pendientes</h1>
+        <h1 className="text-xl font-bold">Registrar con Citas Agendadas</h1>
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded"
           onClick={() =>
             document.getElementById("modal").classList.remove("hidden")
           }
         >
-          Buscar Cita Pendiente
+          Buscar Cita Agendada
         </button>
       </div>
 

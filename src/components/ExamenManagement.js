@@ -163,8 +163,14 @@ const ExamenManagement = () => {
 
     try {
       await axios.put(`/api/examenes/${examen._id}`, { estado: nuevoEstado });
-      setExamenes(
-        examenes.map((p) =>
+      // Actualiza el estado local después de la solicitud exitosa
+      setExamenes((prevExamenes) =>
+        prevExamenes.map((p) =>
+          p._id === examen._id ? { ...p, estado: nuevoEstado } : p
+        )
+      );
+      setFilteredExamenes((prevFilteredExamenes) =>
+        prevFilteredExamenes.map((p) =>
           p._id === examen._id ? { ...p, estado: nuevoEstado } : p
         )
       );
@@ -172,6 +178,7 @@ const ExamenManagement = () => {
       console.error("Error al cambiar el estado del examen:", error);
     }
   };
+
   const handleDelete = async () => {
     try {
       await axios.delete(`/api/examenes/${selectedExamenId}`);
@@ -346,8 +353,7 @@ const ExamenManagement = () => {
                   Descripción
                 </th>
                 <th className="border border-gray-300 px-4 py-2">Costo</th>
-                <th className="border border-gray-300 px-4 py-2">Área</th>{" "}
-                {/* Nueva columna para área */}
+                <th className="border border-gray-300 px-4 py-2">Área</th>
                 <th className="border border-gray-300 px-4 py-2">Estado</th>
                 <th className="border border-gray-300 px-4 py-2">Editar</th>
                 <th className="border border-gray-300 px-4 py-2">Eliminar</th>

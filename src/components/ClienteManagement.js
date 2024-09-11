@@ -411,7 +411,7 @@ const ClienteManagement = () => {
                   Fecha de Nacimiento
                 </th>
                 <th className="border border-gray-300 px-2 py-2 text-xs">
-                  Acciones
+                  Editar
                 </th>
                 <th className="border border-gray-300 px-2 py-2 text-xs">
                   Eliminar
